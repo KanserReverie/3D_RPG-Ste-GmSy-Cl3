@@ -9,13 +9,15 @@ namespace Debugging.Player
         [Header("Speed Vars")]
         public float moveSpeed;
         public float walkSpeed, runSpeed, crouchSpeed, jumpSpeed;
-        private float _gravity = 20.0f;
+        private float _gravity = 10.0f;
         private Vector3 _moveDir;
         private CharacterController _charC;
 
+        private Animator myAnimator;
         private void Start()
         {
             _charC = GetComponent<CharacterController>();
+            myAnimator = GetComponentInChildren<Animator>();
         }
         
         private void Update()
@@ -25,21 +27,44 @@ namespace Debugging.Player
 
         private void Move()
         {
+            Vector2 movementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             if (_charC.isGrounded)
             {
-                if (Input.GetButton("Sprint"))
+                if (Input.GetButton("Crouch"))
                 {
                     moveSpeed = runSpeed;
-                }
-                else if (Input.GetButton("Crouch"))
-                {
-                    moveSpeed = crouchSpeed;
+                    myAnimator.SetFloat("speed", 0.25f);
                 }
                 else
                 {
-                    moveSpeed = walkSpeed;
+                    if (Input.GetButton("Sprint"))
+                    {
+                        moveSpeed = crouchSpeed;
+                        myAnimator.SetFloat("speed", 3f);
+                    }
+                    else if (!Input.GetButton("Sprint"))
+                    {
+                        moveSpeed = walkSpeed;
+
+                        myAnimator.SetFloat("speed", 1f);
+                    }
                 }
+
+                //// If pushing stick > 5%. This is the long way.
+                //if (movementInput.magnitude > 0.05f)
+                //{
+                //    // Set walking animation.
+                //    myAnimator.SetBool("walking", true);
+                //}
+                //else
+                //{
+                //    myAnimator.SetBool("walking", false);
+                //}
+
+                // Everything above in 1 line
+                myAnimator.SetBool("walking", movementInput.magnitude > 0.05f);
+
                 _moveDir = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * moveSpeed);
                 if (Input.GetButton("Jump"))
                 {
