@@ -23,8 +23,63 @@ namespace Debugging.Player
         private void Update()
         {
             Move();
+            Interact();
         }
 
+        // Face to interact.
+        private void Interact()
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit, 3))
+                {
+                    //if (hit.transform.tag == "NPC")
+                    {
+                        Dialogue[] npcDialogue = hit.transform.GetComponents<Dialogue>();
+
+                        foreach (Dialogue dialogue in npcDialogue)
+                        {   
+                            if(dialogue.firstDialogue == true)
+                            {
+                                Cursor.lockState = CursorLockMode.Confined;
+                                Cursor.visible = true;
+
+                                DialogueManager.instance.LoadDialogue(dialogue);
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        }
+
+        //private void InteractCam()
+        //{
+         
+        //    if (Input.GetKeyDown(KeyCode.E))
+        //    {
+        //        Ray ray;
+
+        //        RaycastHit hitInfo;
+        //        ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+
+                
+        //        if (Physics.Raycast(ray, out hitInfo, out hit, 3))
+        //        {
+        //            if (hit.transform.tag == "NPC")
+        //            {
+        //                Dialogue npcDialogue = hit.transform.GetComponent<Dialogue>();
+        //                if (npcDialogue)
+        //                {
+        //                    print(npcDialogue.gameObject.name);
+        //                    DialogueManager.theManager.LoadDialogue(npcDialogue);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
         private void Move()
         {
             Vector2 movementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));

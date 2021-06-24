@@ -35,8 +35,8 @@ namespace Debugging.Player
             {
                 GetComponent<Rigidbody>().freezeRotation = true;
             }
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            ////////////////////////Cursor.lockState = CursorLockMode.Locked;
+            ////////////////////////Cursor.visible = false;
             if(GetComponent<Camera>())
             {
                 axis = RotationalAxis.MouseY;
